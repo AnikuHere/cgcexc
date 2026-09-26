@@ -1,19 +1,22 @@
 @echo off
 setlocal
-where gradle >NUL 2>NUL
-if %ERRORLEVEL%==0 (
-  gradle %*
-  exit /b %ERRORLEVEL%
-)
+set "APP_HOME=%~dp0"
 set "GRADLE_VERSION=8.9"
-set "BASE=%USERPROFILE%\.gradle\wrapper\dists\gradle-%GRADLE_VERSION%-bin"
-set "ZIP=%BASE%\gradle-%GRADLE_VERSION%-bin.zip"
-set "HOME=%BASE%\gradle-%GRADLE_VERSION%"
-if not exist "%HOME%\bin\gradle.bat" (
-  if not exist "%BASE%" mkdir "%BASE%"
-  if not exist "%ZIP%" (
-    powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri 'https://services.gradle.org/distributions/gradle-%GRADLE_VERSION%-bin.zip' -OutFile '%ZIP%'"
-  )
-  powershell -NoProfile -ExecutionPolicy Bypass -Command "Expand-Archive -Force '%ZIP%' '%BASE%'"
+set "DIST_DIR=%APP_HOME%.gradle-dist\gradle-%GRADLE_VERSION%"
+set "GRADLE_BIN=%DIST_DIR%\bin\gradle.bat"
+set "ZIP_FILE=%APP_HOME%.gradle-dist\gradle-%GRADLE_VERSION%-bin.zip"
+
+if exist "%GRADLE_BIN%" goto RUN
+
+if not exist "%APP_HOME%.gradle-dist" mkdir "%APP_HOME%.gradle-dist"
+if not exist "%ZIP_FILE%" (
+  powershell -NoProfile -Command "Invoke-WebRequest -UseBasicParsing 'https://services.gradle.org/distributions/gradle-%GRADLE_VERSION%-bin.zip' -OutFile '%ZIP_FILE%'"
 )
-call "%HOME%\bin\gradle.bat" %*
+
+if not exist "%DIST_DIR%" (
+  powershell -NoProfile -Command "Expand-Archive -Force '%ZIP_FILE%' '%APP_HOME%.gradle-dist'"
+)
+
+:RUN
+call "%GRADLE_BIN%" %*
+exit /b %ERRORLEVEL%

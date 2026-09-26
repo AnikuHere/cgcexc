@@ -1,0 +1,29 @@
+ONLINE BUILD
+============
+
+This ZIP is already flattened. The Android project root contains:
+
+  gradlew
+  gradlew.bat
+  settings.gradle.kts
+  build.gradle.kts
+  app/
+
+Use the compiler's project-root upload mode, NOT its "single Java/Kotlin file"
+mode.
+
+Linux build command:
+
+  ./gradlew assembleDebug
+
+If the site requires:
+
+  /gradlew assembleDebug
+
+that is also supported by the included script.
+
+The included gradlew downloads Gradle 8.9 when necessary because the old
+system Gradle 4.4.1 cannot build this Android Gradle Plugin project.
+
+If a compiler runs Gradle from another working directory, the wrapper first
+changes directory to its own project root so settings.gradle.kts is found.
