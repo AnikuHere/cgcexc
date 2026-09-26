@@ -1,49 +1,6 @@
 # CGCStreamExtractor — self-hosted Android Mirror
 
-This version has **no relay server**.
-
-The Android emulator itself:
-
-1. asks Android for screen capture permission;
-2. waits 5 seconds;
-3. captures its display with `MediaProjection`;
-4. encodes H.264 using Android `MediaCodec`;
-5. packages the video as MPEG-TS/HLS;
-6. runs an HTTP server on port `8080`;
-7. serves:
-   `/stream/index.m3u8`
-8. checks that the playlist actually exists;
-9. sends a notification containing the local URL and, when configured and
-   reachable, the public URL.
-
-## Important: the online emulator must expose a public TCP/HTTP port
-
-The app cannot invent a public address.
-
-The online Android emulator/provider needs to give your Android VM something
-like:
-
-    https://YOUR-PROVIDER-HOST/
-
-and forward a public port/path to the Android VM's port 8080.
-
-Then put this in the app:
-
-    https://YOUR-PROVIDER-HOST
-
-The app will use:
-
-    https://YOUR-PROVIDER-HOST/stream/index.m3u8
-
-If the provider uses a port:
-
-    http://YOUR-PROVIDER-HOST:8080
-
-then enter that exact base address instead.
-
-If there is no public incoming-port/reverse-proxy feature at the emulator
-provider, the app can still host the stream locally, but nobody on the public
-internet will be able to reach it.
+Mirror your stream as m3u8
 
 ## Local URL
 
@@ -56,12 +13,6 @@ Another device on the same reachable network may be able to use:
     http://<ANDROID_VM_IP>:8080/stream/index.m3u8
 
 depending on the emulator's networking rules.
-
-## Build online
-
-This is a normal Gradle Android project. You can upload it to a GitHub repo
-and use the included GitHub Actions workflow from the previous version, or
-import it into an online Android build service that supports Gradle/Kotlin.
 
 ## Current implementation
 
